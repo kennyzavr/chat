@@ -1,0 +1,6 @@
+[submodule "deps/chat-backend"]
+	path = deps/chat-backend
+	url = git@github.com:/kennyzavr/chat-backend
+[submodule "deps/chat-frontend"]
+	path = deps/chat-frontend
+	url = git@github.com:/kennyzavr/chat-frontend

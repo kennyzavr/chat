@@ -1,24 +1,20 @@
-# cd ../server
-# npm run build
-# cd ../client
-# npm run build
-# cd ../builder
- 
-if [ -d "app" ]; then rm -r app; fi
-mkdir app
+git submodule update --init --recursive
 
-cd ..
+docker run --rm -v "$PWD:/usr/src/app" -w /usr/src/app node:14 bash -c "
+    pushd deps/chat-backend && npm install && npm run build && popd &&
+    pushd deps/chat-frontend && npm install && npm run build && popd
+"
 
-cp -r client/dist/chat builder/app/client
+mkdir -p app
+cp -r deps/chat-backend/dist/* app/.
+cp deps/chat-backend/package*.json app/.
+cp .env.example app/.env
+cp docker-compose.yml app/.
+cp Dockerfile app/.
+cp nginx.conf app/.
 
-cp -r server/dist builder/app
-cp server/package.json builder/app
-cp server/package-lock.json builder/app
-cp builder/.prod.env builder/app/.env
-cp builder/docker-compose.yml builder/app
-cp builder/Dockerfile builder/app
-cp builder/nginx.conf builder/app
+# mkdir -p app/dhparam
+# sudo openssl dhparam -out app/dhparam/dhparam-2048.pem 2048
 
-cd builder/app
-mkdir dhparam
-sudo openssl dhparam -out dhparam/dhparam-2048.pem 2048
+mkdir -p app/client
+cp -r deps/chat-frontend/dist/chat/* app/client/.
